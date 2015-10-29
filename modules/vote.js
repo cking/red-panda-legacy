@@ -37,7 +37,7 @@ class Vote {
     this.$db.vote[id] = {
       owner: from.id,
       question: question,
-      answers: args.map(v => { text: v })
+      answers: args.map(function (v) { return { text: v } })
     }
 
     reply('Alright, I registered "' + id + '" with ' + args.length + ' answers.')
@@ -81,6 +81,9 @@ class Vote {
 
       let changed = false
       vote.answers.forEach(function (answer) {
+        if (!answer.votes) {
+          answer.votes = []
+        }
         var idx = answer.votes.indexOf(votee)
         if (idx >= 0) {
           answer.votes.splice(idx, 1)
