@@ -1,0 +1,3 @@
+[submodule "lib/discordie"]
+	path = lib/discordie
+	url = https://github.com/qeled/discordie.git
