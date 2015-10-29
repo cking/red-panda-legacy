@@ -6,6 +6,7 @@ let request = require('request')
 class Gimmicks {
   constructor(deps) {
     let c = this.$commander = deps.commander
+    this.$admin = deps.admin
     utils.privatify(this)
 
     for (var k of ['avatar', 'cookie', 'say']) {
@@ -39,11 +40,13 @@ class Gimmicks {
   }
 
   say (from, args, reply) {
-    reply(args.join(' '))
+    if (this.$admin.can(from.id, 'say')) {
+      reply(args.join(' '))
+    }
   }
 }
 
 Gimmicks.type = 'class'
-Gimmicks.depends = { commander: 1 }
+Gimmicks.depends = { commander: 1, admin: 1 }
 
 module.exports = Gimmicks
