@@ -115,7 +115,16 @@ class Vote {
 
     // first count all votes
     let votes = vote.answers.reduce((p, c) => p + c.votes.length, 0)
-    reply(this.$bot.Users.get(vote.owner).username + ' asks **' + vote.question + '**\n' + vote.answers.map((v, i) => '*[' + i + ']* ' + v.text + ' (' + (Math.round(v.votes.length / votes * 10000) / 100) + '%)').join('\n'))
+    let message = '**' + vote.question + '** has already ' + votes + ' votes!\n' +
+      vote.answers.map(function (v, i) {
+        let part = '' + (Math.round(v.votes.length / votes * 100))
+        if (part.length < 2) {
+          part = ' ' + part
+        }
+
+        return '`[' + part + '%]` ' + v.text + ' (' + v.votes.length + ' votes)'
+      }).join('\n')
+    reply(message)
   }
 }
 
