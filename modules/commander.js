@@ -8,11 +8,13 @@ class Commander {
   constructor(deps) {
     this.$bot = deps.bot
     this.$log = deps.log
+    this.$db = deps.db
     this.$prefix = deps.config.commander.prefix
     this.$commands = {}
     utils.privatify(this)
 
     this.registerCommand('commands', this.commands.bind(this))
+    this.registerCommand('query', this.queryCommand.bind(this))
     this.$bot.Dispatcher.on('MESSAGE_CREATE', this.$command.bind(this))
   }
 
@@ -86,6 +88,16 @@ class Commander {
     this.$commands[command] = cb
   }
 
+  queryOne (query, server) {
+    let res = this.query(query, server)
+    if (res.length === 1) {
+      return res[0]
+    }
+    else {
+      throw new Error('Please limit the result set to 1 item, found ' + res.length + ' for ' + query)
+    }
+  }
+
   query (query, server) {
     let m = query.match(/^<@(\d+)>$/)
     if (m) {
@@ -102,16 +114,6 @@ class Commander {
           }
           else {
             list = this.$bot.Channels.filter(c => c.type === 'text')
-          }
-          break
-
-        // vocie channel
-        case '*':
-          if (server) {
-            list = server.voiceChannels
-          }
-          else {
-            list = this.$bot.Channels.filter(c => c.type === 'voice')
           }
           break
 
@@ -137,16 +139,24 @@ class Commander {
 
         // guild / server
         case '!':
-          list = this.Guilds
+          list = this.$bot.Guilds
           break
       }
 
-      return list? list.filter(e => (e.name || e.username).toLowerCase().indexOf(term.substr(1).toLowerCase()) >= 0): []
+      return list? list.filter(e => (e.name || e.username).toLowerCase().indexOf(query.substr(1).toLowerCase()) >= 0): []
     }
+  }
+
+  queryCommand (from, args, reply) {
+    if (this.$db.owner !== from.id) {
+      return reply('I am sorry, I can\'t let you do that...')
+    }
+
+    reply(this.query(args[0]).map(e => Object.keys(e).map(k => '**' + k + '**: ' + e[k]).join('\n')).join('\n\n'))
   }
 }
 
 Commander.type = 'class'
-Commander.depends = { bot: 1, config: 1, log: 1 }
+Commander.depends = { bot: 1, config: 1, log: 1, db: 1 }
 
 module.exports = Commander
