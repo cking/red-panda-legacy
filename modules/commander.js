@@ -99,9 +99,14 @@ class Commander {
   }
 
   query (query, server) {
-    let m = query.match(/^<@(\d+)>$/)
+    let m = query.match(/^<([@#])(\d+)>$/)
     if (m) {
-      return [this.$bot.Users.get(m[1])]
+      if (m[1] === '@') {
+        return [this.$bot.Users.get(m[2])]
+      }
+      else {
+        return [this.$bot.Channels.get(m[2])]
+      }
     }
     else {
       let list
