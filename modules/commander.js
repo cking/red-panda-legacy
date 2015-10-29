@@ -136,7 +136,7 @@ class Commander {
           break
       }
 
-      return list? []: list.filter(e => (e.name || e.username).toLowerCase().indexOf(term.substr(1).toLowerCase()) >= 0)
+      return list? list.filter(e => (e.name || e.username).toLowerCase().indexOf(term.substr(1).toLowerCase()) >= 0): []
     }
   }
 }

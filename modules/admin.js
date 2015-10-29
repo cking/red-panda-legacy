@@ -10,6 +10,8 @@ class Admin {
     this.$bot = deps.bot
     utils.privatify(this)
 
+    this.$db.user = this.$db.user || {}
+
     for (var k of ['owner', 'mode', 'restart']) {
       c.registerCommand(k, this[k].bind(this))
     }
@@ -22,7 +24,10 @@ class Admin {
       return true
     }
 
-    this.$db.user = this.$db.user || {}
+    if (this.$db.user.all && this.$db.user.all[name]) {
+      return true
+    }
+
     if (!this.$db.user[id]) {
       return false;
     }
@@ -84,8 +89,9 @@ class Admin {
 
     permission = permission === '+'
 
+    this.$db.user[id] = this.$db.user[id] || {}
     this.$db.user[id][name] = permission
-    reply(user + ' is now ' + (permission? 'allowed': 'forbidden') + ' to use ' + permission)
+    reply(user + ' is now ' + (permission? 'allowed': 'forbidden') + ' to use ' + name)
   }
 }
 
