@@ -10,8 +10,6 @@ if (!semver.satisfies(nv, '>=4')) {
 
 let forever = require('forever-monitor')
 let bot = forever.start('app.js', {
-  max: 3,
-  silent: false,
   args: ['--harmony-proxies'],
   parser: function (command, args) {
     // reorder args
