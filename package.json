@@ -1,0 +1,24 @@
+{
+  "name": "red-panda",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christopher König <criss@paars.de>",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.0.1",
+    "ecma-nacl": "^2.2.0",
+    "node-dm": "^2.1.1",
+    "pako": "^0.2.8",
+    "pegjs": "^0.9.0",
+    "requireindex": "^1.1.0",
+    "ssl-root-cas": "^1.1.10",
+    "superagent": "^1.4.0",
+    "tingodb": "^0.4.2",
+    "winston": "^1.1.1",
+    "ws": "^0.8.0"
+  }
+}
