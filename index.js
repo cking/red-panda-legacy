@@ -8,14 +8,16 @@ if (!semver.satisfies(nv, '>=4')) {
   console.error('your node version is to old, please update to at least node v4')
 }
 
-// check for proxies
-if (typeof Proxy === 'undefined') {
-  console.error('proxies are not enabled, restarting script with --harmony-proxies')
-  let spawn = require('child_process').spawn
-  let p = spawn(process.argv.shift(), ['--harmony-proxies'].concat(process.execArgv, process.argv), { stdio: 'inherit' })
-  p.on('exit', process.exit)
-}
-else {
-  // now run myself :)
-  require('./app')
-}
+let forever = require('forever-monitor')
+let bot = forever.start('app.js', {
+  max: 3,
+  silent: false,
+  args: ['--harmony-proxies'],
+  parser: function (command, args) {
+    // reorder args
+    args.push(args.shift())
+
+    // call original parser
+    return forever.Monitor.parseCommand(command, args)
+  }
+})
