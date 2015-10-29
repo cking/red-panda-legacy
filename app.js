@@ -17,7 +17,7 @@ class App {
 
   run () {
     this.$log.info('starting...')
-    return dm.resolve(dm.object(this.$config.modules)).then(() => this.$log.info('all modules registered!'))
+    return dm.resolve(dm.object.apply(null, this.$config.modules)).then(() => this.$log.info('all modules registered!'))
   }
 }
 
