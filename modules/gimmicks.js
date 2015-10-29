@@ -16,7 +16,7 @@ class Gimmicks {
   avatar (from, args, reply) {
     let owner = from
     if (args.length) {
-      owner = bot.query(args[0])
+      owner = this.$commander.query(args[0])
       if (owner.length !== 1) {
         return reply(owner.length + ' matches found. please limit search to 1 result')
       }
