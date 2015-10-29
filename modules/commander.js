@@ -12,6 +12,7 @@ class Commander {
     this.$commands = {}
     utils.privatify(this)
 
+    this.registerCommand('commands', this.commands.bind(this))
     this.$bot.Dispatcher.on('MESSAGE_CREATE', this.$command.bind(this))
   }
 
@@ -44,6 +45,10 @@ class Commander {
 
     this.$log.silly('dispatching command')
     return this.executeCommand(message.author, line, message.channel.sendMessage.bind(message.channel))
+  }
+
+  commands (from, line, reply) {
+    reply('Currently, I know the following commands: \n*' + Object.keys(this.$commands).sort().join(', ') + '*\n\nYou can execute the commands, by either prefixing them with "' + this.$prefix + '" or mention me at the start or end of the command')
   }
 
   executeCommand (from, line, reply) {
