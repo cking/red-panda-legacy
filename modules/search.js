@@ -60,19 +60,28 @@ class Search {
         throw new Error('IMDb doesn\'t have an article about ' + search)
       }
 
+      let movie = res.results.find(m => m.media_type !== 'person')
+
       return Promise.all([
-        this.$mdb.movieInfoAsync({ id: res.results[0].id }),
-        this.$mdb.movieVideosAsync({ id: res.results[0].id })
+        this.$mdb[movie.media_type + 'InfoAsync']({ id: movie.id }),
+        this.$mdb[movie.media_type + 'VideosAsync']({ id: movie.id }),
+        movie.media_type
       ])
     })
     .then(function (info) {
       let movie = info[0]
-      let message = `*(${movie.release_date})* **${movie.title}**`
+      let message = `*(${movie.release_date || (movie.first_air_date + ' - ' + movie.last_air_date)})* **${movie.title || movie.name}**`
       if (movie.tagline) {
         message += ' - ' + movie.tagline
       }
 
-      message += `\nRuntime: ${ ms(ms(movie.runtime+'m')) } | IMdb: http://www.imdb.com/title/${movie.imdb_id}/`
+      message += '\nRuntime: ' + ms(ms((movie.runtime || movie.episode_run_time[0])+'m')) + ' | '
+      if (movie.imdb_id) {
+        message += `IMDb: http://www.imdb.com/title/${movie.imdb_id}/`
+      }
+      else {
+        message += `TMDb: http://www.themoviedb.org/${info[2]}/${movie.id}`
+      }
 
       let movies = info[1].results.filter(m => m.site === 'YouTube')
       if (movies.length) {
@@ -84,7 +93,7 @@ class Search {
       reply(message)
     })
     .catch(function (err) {
-      reply(`I think I became lost during the search... (*${err.message}*)`)
+      reply(`I think I became lost during the search... *(${err.message})*`)
     })
   }
 }
