@@ -14,14 +14,14 @@ class Gimmicks {
     this.$db.define = this.$db.define || { channels: [], terms: {} }
     this.$bot.Dispatcher.on('MESSAGE_CREATE', this.messageCreate.bind(this))
 
-    for (var k of ['avatar', 'cookie', 'say', 'define', 'define_cleverclock']) {
+    for (var k of ['avatar', 'cookie', 'say', 'define', 'define_cleverclock', 'undefine']) {
       c.registerCommand(k, this[k].bind(this))
     }
   }
 
   messageCreate (data) {
     let msg = data.message
-    if (msg.author.id === this.$bot.User.id || this.$db.define.channels.indexOf(msg.channel_id) < 0) {
+    if (this.$commander.isCommand(msg) || this.$db.define.channels.indexOf(msg.channel_id) < 0) {
       return
     }
 
@@ -83,6 +83,16 @@ class Gimmicks {
 
     this.$db.define.terms[keyword] = definition
     reply(`Thank you for teaching me senpai! From now on **${keyword}** ${definition}`)
+  }
+
+  undefine (from, args, reply) {
+    if (!this.$admin.can(from.id, 'define delete')) {
+      reply(`I am sorry ${from.username}, I am afraid i can't let you do that.`)
+    }
+
+    let keyword = args.shift()
+    delete this.$db.define.terms[keyword]
+    reply(`I think I got that one wrong senpai! I deleted **${keyword}** from my list.`)
   }
 
   define_cleverclock (from, args, reply) {

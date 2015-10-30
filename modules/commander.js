@@ -18,16 +18,13 @@ class Commander {
     this.$bot.Dispatcher.on('MESSAGE_CREATE', this.$command.bind(this))
   }
 
-  $command (data) {
-    this.$log.silly('new incoming message')
-
-    let message = data.message
+  isCommand(message) {
     let line = message.content
 
     // ignore myself and file uploads
     if (message.author.id == this.$bot.User.id || message.attachments.length) {
       this.$log.silly('it is my own or has a file, ignoring')
-      return
+      return false
     }
     // am i mentioned?
     else if (this.$bot.User.isMentioned(message)) {
@@ -42,11 +39,22 @@ class Commander {
     // is this a regular message?
     else if (!message.isPrivate) {
       this.$log.silly('this is a normal message, ignoring')
-      return
+      return false
     }
 
-    this.$log.silly('dispatching command')
-    return this.executeCommand(message.author, line, message.channel.sendMessage.bind(message.channel))
+    return line
+  }
+
+  $command (data) {
+    this.$log.silly('new incoming message')
+
+    let message = data.message
+    let line = this.isCommand(message)
+
+    if (line) {
+      this.$log.silly('dispatching command')
+      return this.executeCommand(message.author, line, message.channel.sendMessage.bind(message.channel))
+    }
   }
 
   commands (from, line, reply) {
