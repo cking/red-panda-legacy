@@ -62,9 +62,6 @@ class Search {
       reply(`I think I became lost during the search... (*${err.message}*)`)
     })
   }
-
-
-  http://www.omdbapi.com/?r=json&v=1&s=final+fantasy
 }
 
 Search.type = 'class'
