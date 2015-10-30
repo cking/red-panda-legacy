@@ -3,6 +3,7 @@
 let utils = require('../lib/utils')
 let Promise = require('bluebird')
 let MovieDB = require('moviedb')
+let ms = require('ms')
 let requestAsync = Promise.promisify(require('request'))
 
 const WIKIPEDIA = 'https://en.wikipedia.org/w/api.php?format=json&action=query&redirects=true&prop=info&&inprop=url|displaytitle&titles='
@@ -41,11 +42,17 @@ class Search {
   }
 
   imdb (from, args, reply) {
+    let year = null
+    if (args[0] === 'y') {
+      args.shift()
+      year = args.shift()
+    }
     let search = args.join(' ')
 
     this.$mdb.searchMovieAsync({
       query: search,
       include_adult: true,
+      year: year
     })
     .bind(this)
     .then(function (res) {
