@@ -43,7 +43,7 @@ class Search {
 
   imdb (from, args, reply) {
     let year = null
-    if (args[0] === 'y') {
+    if (args[0] === '-y') {
       args.shift()
       year = args.shift()
     }
