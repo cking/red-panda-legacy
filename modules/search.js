@@ -47,6 +47,7 @@ class Search {
       query: search,
       include_adult: true,
     })
+    .bind(this)
     .then(function (res) {
       if (res.total_results === 0) {
         throw new Error('IMDb doesn\'t have an article about ' + search)
