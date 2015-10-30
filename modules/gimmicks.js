@@ -21,7 +21,7 @@ class Gimmicks {
 
   messageCreate (data) {
     let msg = data.message
-    if (this.$commander.isCommand(msg) || this.$db.define.channels.indexOf(msg.channel_id) < 0) {
+    if (this.$commander.isCommand(msg) || msg.authorid === this.$bot.User.id || this.$db.define.channels.indexOf(msg.channel_id) < 0) {
       return
     }
 
