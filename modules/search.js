@@ -2,6 +2,7 @@
 
 let utils = require('../lib/utils')
 let Promise = require('bluebird')
+let MovieDB = require('moviedb')
 let requestAsync = Promise.promisify(require('request'))
 
 const WIKIPEDIA = 'https://en.wikipedia.org/w/api.php?format=json&action=query&redirects=true&prop=info&&inprop=url|displaytitle&titles='
@@ -10,6 +11,7 @@ const OMDB = 'http://www.omdbapi.com/?v=1&r=json&plot=full&tomatoes=true&t='
 class Search {
   constructor(deps) {
     let c = this.$commander = deps.commander
+    this.$mdb = Promise.promisifyAll(MovieDB(deps.config.search.tmdb))
     utils.privatify(this)
 
     for (var k of ['wiki', 'imdb']) {
@@ -41,22 +43,37 @@ class Search {
   imdb (from, args, reply) {
     let search = args.join(' ')
 
-    requestAsync(OMDB + encodeURI(search))
+    this.$mdb.searchMovieAsync({
+      query: search,
+      include_adult: true,
+    })
     .then(function (res) {
-      let data = JSON.parse(res.body)
-
-      if (data.Error) {
+      if (res.total_results === 0) {
         throw new Error('IMDb doesn\'t have an article about ' + search)
       }
 
-      return data
+      return Promise.all([
+        this.$mdb.movieInfoAsync({ id: res.results[0].id }),
+        this.$mdb.movieVideosAsync({ id: res.results[0].id })
+      ])
     })
-    .then(function (movie) {
-      reply(`*(${movie.Year})* **${movie.Title}** - http://www.imdb.com/title/${movie.imdbID}/
-Rated: ${movie.Rated} | Runtime: ${movie.Runtime} | Awards: ${movie.Awards}
-Directory: ${movie.Director} | Writer: ${movie.Writer} | Actors: ${movie.Actors}
+    .then(function (info) {
+      let movie = info[0]
+      let message = `*(${movie.release_date})* **${movie.title}**`
+      if (movie.tagline) {
+        message += ' - ' + movie.tagline
+      }
 
-${movie.Plot}`)
+      message += `\nRuntime: ${ ms(ms(movie.runtime+'m')) } | IMdb: http://www.imdb.com/title/${movie.imdb_id}/`
+
+      let movies = info[1].results.filter(m => m.site === 'YouTube')
+      if (movies.length) {
+        message += ' | Video: https://youtu.be/' + movies[Math.floor(Math.random() * movies.length)].key
+      }
+
+      message += '\n\n' + movie.overview
+
+      reply(message)
     })
     .catch(function (err) {
       reply(`I think I became lost during the search... (*${err.message}*)`)
@@ -65,6 +82,6 @@ ${movie.Plot}`)
 }
 
 Search.type = 'class'
-Search.depends = { commander: 1  }
+Search.depends = { commander: 1, config: 1 }
 
 module.exports = Search
