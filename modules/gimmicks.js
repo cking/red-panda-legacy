@@ -27,7 +27,7 @@ class Gimmicks {
 
     for (let k in this.$db.define.terms) {
       if (msg.content.match(new RegExp(`(^|\\s)${k}(\s|$)`, 'i'))) {
-        this.define(msg.author, [k], msg.channel)
+        this.define(msg.author, [k], msg.channel.sendMessage.bind(msg.channel))
       }
     }
   }
