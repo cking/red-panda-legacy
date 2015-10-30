@@ -49,9 +49,9 @@ class Search {
     }
     let search = args.join(' ')
 
-    this.$mdb.searchMovieAsync({
+    this.$mdb.searchMultiAsync({
       query: search,
-      include_adult: true,
+      include_adult: false,
       year: year
     })
     .bind(this)
