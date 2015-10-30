@@ -67,10 +67,10 @@ class Gimmicks {
     let term = this.$db.define.terms[args[0]]
     if (args.length === 1) {
       if (term) {
-        reply(`*Sorry to disturb you, but in my opinion* **${args[0]}** ${term}`)
+        return reply(`*Sorry to disturb you, but in my opinion* **${args[0]}** ${term}`)
       }
       else {
-        reply('*I tried, I really tried :crying_cat_face: I can\'t find out what ' + args[0] + ' means...*')
+        return reply('*I tried, I really tried :crying_cat_face: I can\'t find out what ' + args[0] + ' means...*')
       }
     }
 
