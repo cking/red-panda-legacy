@@ -75,7 +75,7 @@ class Gimmicks {
     }
 
     if (!this.$admin.can(from.id, 'define')) {
-      reply(`I am sorry ${from.username}, I am afraid i can't let you do that.`)
+      return reply(`I am sorry ${from.username}, I am afraid i can't let you do that.`)
     }
 
     let keyword = args.shift()
@@ -87,7 +87,7 @@ class Gimmicks {
 
   undefine (from, args, reply) {
     if (!this.$admin.can(from.id, 'define delete')) {
-      reply(`I am sorry ${from.username}, I am afraid i can't let you do that.`)
+      return reply(`I am sorry ${from.username}, I am afraid i can't let you do that.`)
     }
 
     let keyword = args.shift()
@@ -97,7 +97,7 @@ class Gimmicks {
 
   define_cleverclock (from, args, reply) {
     if (!this.$admin.can(from.id, 'define cleverclock')) {
-      reply(`I am sorry ${from.username}, I am afraid i can't let you do that.`)
+      return reply(`I am sorry ${from.username}, I am afraid i can't let you do that.`)
     }
 
     let channel = from.channel
