@@ -75,7 +75,7 @@ class Gimmicks {
     }
 
     if (!this.$admin.can(from.id, 'define')) {
-      return reply(`I am sorry ${from.username}, I am afraid i can't let you do that.`)
+      return reply(`I am sorry ${from.username}, I am afraid i can't do that.`)
     }
 
     let keyword = args.shift()
