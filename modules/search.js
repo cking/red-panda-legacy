@@ -52,7 +52,6 @@ class Search {
       return data
     })
     .then(function (movie) {
-      {"Title":"Final Fantasy","Year":"1987","Rated":"N/A","Released":"N/A","Runtime":"N/A","Genre":"Adventure, Fantasy","Director":"Hironobu Sakaguchi","Writer":"Hironobu Sakaguchi (original concept), Kenji Terada (scenario)","Actors":"N/A","Plot":"Magic-using warriors discover an Evil god.....","Language":"Japanese","Country":"Japan","Awards":"N/A","Poster":"http://ia.media-imdb.com/images/M/MV5BMTg0MDQ1OTQ3MF5BMl5BanBnXkFtZTcwODE2MzE2MQ@@._V1_SX300.jpg","Metascore":"N/A","imdbRating":"8.0","imdbVotes":"556","imdbID":"tt0207484","Type":"game","Response":"True"}
       reply(`*(${movie.Year})* **${movie.Title}** - http://www.imdb.com/title/${movie.imdbID}/
 Rated: ${movie.Rated} | Runtime: ${movie.Runtime} | Awards: ${movie.Awards}
 Directory: ${movie.Director} | Writer: ${movie.Writer} | Actors: ${movie.Actors}
